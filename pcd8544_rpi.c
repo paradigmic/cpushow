@@ -69,9 +69,9 @@ int main (void)
   LCDclear();
   
   // show logo
-  LCDshowLogo();
+  //LCDshowLogo();
   
-  delay(2000);
+  //delay(2000);
   
   for (;;)
   {
@@ -86,26 +86,41 @@ int main (void)
 	  }
 	  
 	  // uptime
-	  char uptimeInfo[15];
+	  char uptimeInfo1[15];
+      char uptimeInfo2[15];
 	  unsigned long uptime = sys_info.uptime / 60;
-	  sprintf(uptimeInfo, "Uptime %ld min.", uptime);
+      unsigned long days = uptime / 60 / 24;
+      unsigned long hours = (uptime / 60) % 60;
+      unsigned long minutes = uptime % 60;
+      snprintf(uptimeInfo1, sizeof(uptimeInfo1),
+               "Uptime %03ld dys", days);
+      snprintf(uptimeInfo2, sizeof(uptimeInfo2),
+               "%02ld hrs %02ld mns", hours, minutes);
 	  
 	  // cpu info
 	  char cpuInfo[10]; 
 	  unsigned long avgCpuLoad = sys_info.loads[0] / 1000;
-	  sprintf(cpuInfo, "CPU %ld%%", avgCpuLoad);
+	  snprintf(cpuInfo, sizeof(cpuInfo), 
+               "CPU %ld%%", avgCpuLoad);
 	  
 	  // ram info
 	  char ramInfo[10]; 
 	  unsigned long totalRam = sys_info.freeram / 1024 / 1024;
-	  sprintf(ramInfo, "RAM %ld MB", totalRam);
+	  snprintf(ramInfo, sizeof(ramInfo), 
+               "RAM %ld MB", totalRam);
+
+      // other
+      char other[15];
+      snprintf(other, sizeof(other),
+               "Procs %ld", sys_info.procs);
 	  
 	  // build screen
-	  LCDdrawstring(0, 0, "Raspberry Pi:");
-	  LCDdrawline(0, 10, 83, 10, BLACK);
-	  LCDdrawstring(0, 12, uptimeInfo);
-	  LCDdrawstring(0, 20, cpuInfo);
-	  LCDdrawstring(0, 28, ramInfo);
+      LCDdrawstring(0, 0, uptimeInfo1);
+	  LCDdrawstring(0, 8, uptimeInfo2);
+      LCDdrawstring(0, 16, cpuInfo);
+	  LCDdrawstring(0, 24, ramInfo);
+	  LCDdrawstring(0, 32, other);
+      LCDdrawstring(0, 40, "");
 	  LCDdisplay();
 	  
 	  delay(1000);
