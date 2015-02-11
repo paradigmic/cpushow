@@ -90,7 +90,7 @@ int main (void)
       char uptimeInfo2[15];
 	  unsigned long uptime = sys_info.uptime / 60;
       unsigned long days = uptime / 60 / 24;
-      unsigned long hours = (uptime / 60) % 60;
+      unsigned long hours = (uptime / 60) % 60 % 24;
       unsigned long minutes = uptime % 60;
       snprintf(uptimeInfo1, sizeof(uptimeInfo1),
                "Uptime %03ld dys", days);
@@ -98,13 +98,12 @@ int main (void)
                "%02ld hrs %02ld mns", hours, minutes);
 	  
 	  // cpu info
-	  char cpuInfo[10]; 
-	  unsigned long avgCpuLoad = sys_info.loads[0] / 1000;
+	  char cpuInfo[15]; 
 	  snprintf(cpuInfo, sizeof(cpuInfo), 
-               "CPU %ld%%", avgCpuLoad);
+               "CPU load %.2f", ((float)sys_info.loads[0])/(1<<SI_LOAD_SHIFT));
 	  
 	  // ram info
-	  char ramInfo[10]; 
+	  char ramInfo[15]; 
 	  unsigned long totalRam = sys_info.freeram / 1024 / 1024;
 	  snprintf(ramInfo, sizeof(ramInfo), 
                "RAM %ld MB", totalRam);
